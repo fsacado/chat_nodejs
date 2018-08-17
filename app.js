@@ -39,24 +39,11 @@ app.use(session({
 
 // serving template index.html when url is on '/'
 app.get('/', (req, res) => {
-    // if (req.session.error) { // if there's an error in session...
-    //     res.locals.error = req.session.error; // ...affect the value to locals.error, so that we can retrieve it on the front end side
-    //     req.session.error = undefined; // destroy session error
-    // }
     res.render('index');
 });
 
-// retrieving post values
-// app.post('/', (req, res) => {
-//     if (req.body.message == 'undefined' || req.body.message === '') { // if the message sent is empty or undefined... 
-//         // res.render('index', {error: 'You didn\'t send any message, please try again ;)'});
-//         req.session.error = 'You didn\'t send any message'; // ...set an error in session object
-//         res.redirect('/'); // and redirect
-//     }
-//     res.render('index');
-// });
 
-
+// TESTING PHASE
 io.on('connection', (socket) => {
     console.log('A user hast just logged in', socket.id);
     
