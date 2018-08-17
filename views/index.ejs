@@ -1,0 +1,41 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/global.css">
+    <title>Tchat en node.js</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header_div row my-4">
+            <h1 class="center col-12 col-md-8 text-sm-left">Bluesquare chat</h1>
+            <h2 class="center col-12 col-md-4 text-sm-right">nom_utilisateur</h2>
+        </div>
+
+        <div class="row">
+            <textarea id="output_field" class="col-12"></textarea>
+        </div>
+
+        <div id="info"></div>
+
+        <form id="main_form" method="POST" action="/" class="row mt-5">
+            <% if (locals.error) { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+            <input type="text" name="message" id="message_input" class="col-12 col-md-10" placeholder="Your message">
+            <input type="submit" value="Send" class="submit_button btn btn-success col-4 offset-4 col-md-1 offset-md-1">
+        </form>
+    </div>
+
+    <script src="lib/jQuery.js"></script>
+    <script src="js/chat.js"></script>
+
+</body>
+</html>
