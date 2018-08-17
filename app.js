@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 const server = require('http').Server(app);
-const bodyParser = require('body-parser');
-const session = require('express-session');
 const io = require('socket.io')(server);
+const random_name = require('node-random-name');
+const date = require('date-and-time');
 
 
 // TEMPLATE ENGINE
@@ -19,20 +19,6 @@ app.set('view engine', 'ejs');
 // use folder assets by default for static files
 app.use(express.static('assets'));
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
-
-// parse application/json
-app.use(bodyParser.json());
-
-// session object
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
-}));
-
 
 // ROUTES
 
@@ -43,21 +29,43 @@ app.get('/', (req, res) => {
 });
 
 
-// TESTING PHASE
+// SOCKETS
+
+
+// when someone connects, open a new socket
 io.on('connection', (socket) => {
-    console.log('A user hast just logged in', socket.id);
-    
+
+    let username = random_name({first: true}); // assign a random username
+    console.log(username, 'has just logged in');
+
+    // send the new username to client side
+    socket.on('new user', () => {
+        socket.emit('new user', {username: username});
+    });
+
     socket.on('chat message', (message) => {
-        if (message !== '' || message !== undefined) {
-            // socket.broadcast.emit('user typing', message); // emits message to all the others but not me
-            io.emit('message ok', message); // sending the message back to everyone
+        let now = new Date(); 
+        let formatted_date = date.format(now, 'HH:mm');
+        if (message !== '' && message !== undefined) { // if the received message is complete...
+            io.emit('message ok', { // ...send it back to everyone
+                message: message,
+                username: username,
+                date: formatted_date
+            });
         }
     });
 
-    socket.on('user_typing', () => {
-        socket.broadcast.emit('user_typing');
+    // tell everyone but me that I'm writing
+    socket.on('user typing', () => {
+        socket.broadcast.emit('user typing', {username:username});
     });
 
+    // stop showing everyone that I'm writing
+    socket.on('user stop typing', () => {
+        socket.broadcast.emit('user stop typing');
+    });
+
+    // if a user disconnects
     socket.on('disconnect', () => {
         console.log('A user has logged out');
     });

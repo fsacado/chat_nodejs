@@ -1,24 +1,20 @@
 
 /* GENERAL */
+
 .center {
     text-align: center;
 }
 
+.block {
+    display: block;
+}
+
 /* PAGE */
+
 .container {
     margin-top: 3vh;
     max-width: 80vw;
 }
-
-#output_field {
-    height: 60vh;
-    box-shadow: 2px 2px 7px grey;
-}
-
-/* .main_logo {
-    width: 90px;
-    height: 70px;
-} */
 
 h1 {
     font-family: "Lucinda", "sans-serif";
@@ -30,11 +26,30 @@ h2 {
     font-size: 20px;
 }
 
+#output_field {
+    height: 60vh;
+    box-shadow: 2px 2px 7px grey;
+    overflow-y: auto;
+}
+
+.username {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.date {
+    font-size: 10px;
+}
+
+#info {
+    font-style: italic;
+    color: grey;
+    font-size: 14px;
+}
+
 @media(max-width: 766px) {
     .submit_button {
         margin-top: 15px;
     }
 }
-
-
-
