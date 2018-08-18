@@ -9,6 +9,10 @@
     display: block;
 }
 
+.card {
+    border-radius: 0;
+}
+
 /* PAGE */
 
 .container {
@@ -34,10 +38,11 @@ h2 {
     height: 100%;
     width: 20vw;
     box-shadow: 2px 2px 7px grey;
-    overflow-y: auto;
 }
 
-
+#users_list {
+    overflow-y: auto;
+}
 
 #output_field {
     height: 60vh;

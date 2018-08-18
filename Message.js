@@ -12,10 +12,10 @@ class Message
 
     constructor(username, content, username_color = 'black', content_color = 'black') {
         this.username = username;
-        this.date = this.getDate();
         this.content = content;
         this.username_color = username_color;
         this.content_color = content_color;
+        this.date = this.getDate();
     }
 
 }

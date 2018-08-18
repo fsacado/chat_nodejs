@@ -6,7 +6,7 @@ let socket = io.connect('http://localhost:3000');
 
 
 let message = $('#message_input');
-users = $('#connected_users');
+users = $('#users_list');
 form = $('#main_form');
 output = $('#output_field');
 info = $('#info_field');
@@ -27,7 +27,14 @@ function showNewMessage(username, username_color, date, content, content_color) 
     );
     output.animate({ // auto-scroll to the bottom
         scrollTop: 1000
-    }, 'slow'); 
+    }, 'slow');
+}
+
+function addLoggedUser(username) {
+    users.append(`<div>${username}</div>`);
+    users.animate({
+        scrollTop: 1000
+    }, 'slow');
 }
 
 
@@ -37,20 +44,21 @@ function showNewMessage(username, username_color, date, content, content_color) 
 // emits when page first loads
 socket.emit('new user');
 
-// when form is submited
-form.submit(() => {
-    socket.emit('chat message', message.val()); // emit "chat message" event 
-    message.val(''); // empty the input
-    socket.emit('user typing', false);
-    return false;
-});
-
+// when writing on the message input
 message.on('keyup', () => {
     if (message.val().length === 0) {
         socket.emit('user typing', false); // when the message input is empty, set "user typing" to false
     } else {
         socket.emit('user typing', true); // when the user is writing, set "user typing" to true
     }
+});
+
+// when form is submited
+form.submit(() => {
+    socket.emit('chat message', message.val()); // emit "chat message" event 
+    message.val(''); // empty the input
+    socket.emit('user typing', false);
+    return false;
 });
 
 
@@ -61,7 +69,17 @@ socket.on('logged as', (data) => {
     $('.logged_as').text(data.username);
 });
 
-socket.on('user has logged', (data) => { 
+socket.on('users already connected', (data) => {
+    addLoggedUser(data.username);
+});
+
+// when a new user has logged, tell everyone else, and show him all the users already connected 
+socket.on('user has logged', (data) => {
+    showNewMessage(data.username, data.username_color, data.date, data.content, data.content_color);
+    addLoggedUser(data.username);
+});
+
+socket.on('user has left', (data) => {
     showNewMessage(data.username, data.username_color, data.date, data.content, data.content_color);
 });
 

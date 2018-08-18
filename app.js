@@ -3,7 +3,6 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const random_name = require('node-random-name');
-const date = require('date-and-time');
 let Message = require('./Message');
 
 
@@ -32,26 +31,35 @@ app.get('/', (req, res) => {
 
 // SOCKETS
 
+let users = []; // it will contain the users list
 
 // when someone connects, open a new socket
 io.on('connection', (socket) => {
 
     const username = random_name({ // assign a random username to the user
         first: true
-    }); 
-    
-    let messageLoggedIn = new Message(username, 'has joined the channel', 'black', 'grey');
-    
+    });
+
+    users.push(username); // push current user in the array
+
     console.log(username, 'has just logged in');
-    
+    let messageLoggedIn = new Message(username, 'has joined the channel', 'black', 'grey');
+
     // send the new username to client side
     socket.on('new user', () => {
         socket.emit('logged as', messageLoggedIn);
+
+        users.forEach(function (user) { // for each logged user, send his information to the current user
+            if (user !== username) { // the user doesn't have to see his own username on the list
+                let messageAlreadyIn = new Message(user, 'is already on the channel', 'black', 'grey');
+                socket.emit('users already connected', messageAlreadyIn);
+            }
+        });
+
         socket.broadcast.emit('user has logged', messageLoggedIn);
     });
 
     socket.on('chat message', (message) => {
-
         if (message !== '' && message !== undefined) { // if the received message is complete...
 
             let messageToOtherUsers = new Message(username, message);
@@ -62,7 +70,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    
+
     socket.on('user typing', (isTyping) => {
         if (isTyping === true) { // if user is typing
             socket.broadcast.emit('user typing', {
@@ -76,6 +84,12 @@ io.on('connection', (socket) => {
     // if a user disconnects
     socket.on('disconnect', () => {
         console.log('A user has logged out');
+        let messageLoggedOut = new Message(username, 'has left the channel', 'black', 'grey');
+
+        let usernameIndex = users.indexOf(username);
+        users.splice(usernameIndex, 1);
+        
+        socket.broadcast.emit('user has left', messageLoggedOut);
     });
 });
 
