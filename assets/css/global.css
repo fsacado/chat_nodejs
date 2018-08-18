@@ -37,6 +37,8 @@ h2 {
     overflow-y: auto;
 }
 
+
+
 #output_field {
     height: 60vh;
     box-shadow: 2px 2px 7px grey;
@@ -58,6 +60,8 @@ h2 {
     color: grey;
     font-size: 14px;
 }
+
+
 
 
 @media(max-width: 766px) {
