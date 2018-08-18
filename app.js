@@ -3,7 +3,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const random_name = require('node-random-name');
-const date = require('date-and-time');
+let Message = require('./Message');
 
 
 // TEMPLATE ENGINE
@@ -31,57 +31,65 @@ app.get('/', (req, res) => {
 
 // SOCKETS
 
+let users = []; // it will contain the users list
 
 // when someone connects, open a new socket
 io.on('connection', (socket) => {
 
-    let username = random_name({
+    const username = random_name({ // assign a random username to the user
         first: true
-    }); // assign a random username
+    });
+
+    users.push(username); // push current user in the array
+
     console.log(username, 'has just logged in');
+    let messageLoggedIn = new Message(username, 'has joined the channel', 'black', 'grey');
 
     // send the new username to client side
     socket.on('new user', () => {
-        socket.emit('new user', {
-            username: username
+        socket.emit('logged as', messageLoggedIn);
+
+        users.forEach(function (user) { // for each logged user, send his information to the current user
+            if (user !== username) { // the user doesn't have to see his own username on the list
+                let messageAlreadyIn = new Message(user, 'is already on the channel', 'black', 'grey');
+                socket.emit('users already connected', messageAlreadyIn);
+            }
         });
+
+        socket.broadcast.emit('user has logged', messageLoggedIn);
     });
 
     socket.on('chat message', (message) => {
-        let now = new Date();
-        let formatted_date = date.format(now, 'HH:mm');
-
         if (message !== '' && message !== undefined) { // if the received message is complete...
 
-            let dataObj = {
-                message: message,
-                username: username,
-                date: formatted_date,
-                color: 'black'
-            };
+            let messageToOtherUsers = new Message(username, message);
+            let messageToCurrentUser = new Message('Me', message, 'red');
 
-            socket.broadcast.emit('message ok', dataObj); // ...send it back to everyone
-            dataObj.username = 'Me'; // changing username to 'Me' so that the current user doesn't see his username each time
-            dataObj.color = 'red'; // and the 'Me' will be in red
-            socket.emit('message ok', dataObj); // send only to the current user
+            socket.broadcast.emit('message ok', messageToOtherUsers); // ... send it back to everyone...
+            socket.emit('message ok', messageToCurrentUser); // ...and send new modifications only to the current user
         }
     });
 
-    // tell everyone but me that I'm writing
-    socket.on('user typing', () => {
-        socket.broadcast.emit('user typing', {
-            username: username
-        });
-    });
 
-    // stop showing everyone that I'm writing
-    socket.on('user stop typing', () => {
-        socket.broadcast.emit('user stop typing');
+    socket.on('user typing', (isTyping) => {
+        if (isTyping === true) { // if user is typing
+            socket.broadcast.emit('user typing', {
+                username: username
+            });
+        } else { // if user is not typing
+            socket.broadcast.emit('user not typing');
+        }
     });
 
     // if a user disconnects
     socket.on('disconnect', () => {
         console.log('A user has logged out');
+        let messageLoggedOut = new Message(username, 'has left the channel', 'black', 'grey');
+
+        let usernameIndex = users.indexOf(username);
+        users.splice(usernameIndex, 1);
+        
+        socket.broadcast.emit('user has left', messageLoggedOut);
     });
 });
 

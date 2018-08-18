@@ -7,35 +7,45 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/global.css">
-    <title>Tchat en node.js</title>
+    <title>Bluesquare chat</title>
 </head>
 
 <body>
     <div class="container">
         <div class="header_div row my-4">
-            <h1 class="center col-12 col-md-8 text-sm-left">Bluesquare chat</h1>
-            <h2 class="center col-12 col-md-4 text-sm-right">logged as <span class="logged_as"></span></h2>
+            <h1 class="center col-12 col-md-6 offset-md-3">Bluesquare chat</h1>
+            <h2 class="center col-12 col-md-3 text-md-right my-auto">logged as
+                <span class="logged_as"></span>
+            </h2>
         </div>
 
-        <div class="row">
-            <div id="output_field" class="col-12"></div>
+        <div id="main_div">
+
+            <!-- connected users screen -->
+            <div id="connected_users" class="mb-3 mb-md-0 mr-md-3 float-md-left card">
+                <div class="card-header center">Connected users</div>
+                <div id="users_list" class="p-3"></div>
+            </div>
+
+            <!-- output screen -->
+            <div class="row">
+                <div id="output_field" class="col-12"></div>
+            </div>
+
+            <!-- "a user is typing" -->
+            <div id="info_field" class="row mt-3 mt-md-4 mt-xl-5"></div>
+
+            <!-- message input and submit button -->
+            <form id="main_form" method="POST" action="/" class="row">
+                <input type="text" name="message" id="message_input" class="col-12 col-md-10" placeholder="Your message">
+                <input type="submit" value="Send" class="submit_button btn btn-success col-4 offset-4 col-md-2 offset-md-0">
+            </form>
         </div>
-
-        <div id="info" class="row mt-5"></div>
-
-        <form id="main_form" method="POST" action="/" class="row">
-            <% if (locals.error) { %>
-                <div class="alert alert-danger" role="alert">
-                    <%= error %>
-                </div>
-            <% } %>
-            <input type="text" name="message" id="message_input" class="col-12 col-md-10" placeholder="Your message">
-            <input type="submit" value="Send" class="submit_button btn btn-success col-4 offset-4 col-md-1 offset-md-1">
-        </form>
     </div>
 
     <script src="lib/jQuery.js"></script>
     <script src="js/chat.js"></script>
 
 </body>
+
 </html>
