@@ -8,7 +8,7 @@ let socket = io.connect('http://localhost:3000');
 let message = $('#message_input');
     form = $('#main_form');
     output = $('#output_field');
-    info = $('#info');
+    info = $('#info_field');
 
 
 // EMIT EVENTS

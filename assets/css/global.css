@@ -26,6 +26,17 @@ h2 {
     font-size: 20px;
 }
 
+#main_div {
+    height: 73%;
+}
+
+#connected_users {
+    height: 100%;
+    width: 20vw;
+    box-shadow: 2px 2px 7px grey;
+    overflow-y: auto;
+}
+
 #output_field {
     height: 60vh;
     box-shadow: 2px 2px 7px grey;
@@ -42,13 +53,18 @@ h2 {
     font-size: 10px;
 }
 
-#info {
+#info_field {
     font-style: italic;
     color: grey;
     font-size: 14px;
 }
 
+
 @media(max-width: 766px) {
+    #connected_users {
+        height: 50%;
+        width: inherit;
+    }
     .submit_button {
         margin-top: 15px;
     }
