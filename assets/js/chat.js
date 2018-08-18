@@ -45,7 +45,7 @@ socket.on('new user', (data) => {
 
 // when the message is ok show it on the output
 socket.on('message ok', (data) => {
-    output.append('<div class="my-2"><div class="block"><span class="username">' + data.username + ' </span><span class="date">' + data.date + '</span></div> ' + data.message + '</div>');
+    output.append('<div class="my-2"><div class="block username_date" style="color:' + data.color + '"><span class="username">' + data.username + ' </span><span class="date">' + data.date + '</span></div> ' + data.message + '</div>');
     output.animate({scrollTop: 1000}, 'slow'); // auto-scroll to the bottom
 });
 
