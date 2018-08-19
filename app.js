@@ -45,6 +45,7 @@ io.on('connection', (socket) => {
     console.log(username, 'has just logged in');
     let messageLoggedIn = new Message(username, 'has joined the channel', 'black', 'grey');
 
+
     // send the new username to client side
     socket.on('new user', () => {
         socket.emit('logged as', messageLoggedIn);
@@ -59,6 +60,7 @@ io.on('connection', (socket) => {
         socket.broadcast.emit('user has logged', messageLoggedIn);
     });
 
+
     socket.on('chat message', (message) => {
         if (message !== '' && message !== undefined) { // if the received message is complete...
 
@@ -66,35 +68,33 @@ io.on('connection', (socket) => {
             let messageToCurrentUser = new Message('Me', message, 'red');
 
             socket.broadcast.emit('message ok', messageToOtherUsers); // ... send it back to everyone...
-            socket.emit('message ok', messageToCurrentUser); // ...and send new modifications only to the current user
+            socket.emit('message ok', messageToCurrentUser); // ...and send it to the current user, with different color and text
         }
     });
 
 
     socket.on('user typing', (isTyping) => {
-        if (isTyping === true) { // if user is typing
-            socket.broadcast.emit('user typing', {
+        if (isTyping === true) { // if the user is typing...
+            socket.broadcast.emit('user typing', { // ...tell everyone else
                 username: username
             });
-        } else { // if user is not typing
+        } else { // otherwise don't tell it
             socket.broadcast.emit('user not typing');
         }
     });
+
 
     // if a user disconnects
     socket.on('disconnect', () => {
         console.log('A user has logged out');
         let messageLoggedOut = new Message(username, 'has left the channel', 'black', 'grey');
 
-        let usernameIndex = users.indexOf(username);
-        users.splice(usernameIndex, 1);
+        let usernameIndex = users.indexOf(username); // get the index of the user from the users array...
+        users.splice(usernameIndex, 1); // ...and remove him
         
-        socket.broadcast.emit('user has left', messageLoggedOut);
+        socket.broadcast.emit('user has logged out', messageLoggedOut);
     });
 });
-
-
-
 
 
 // listen on port 3000

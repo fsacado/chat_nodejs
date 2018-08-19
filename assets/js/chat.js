@@ -31,7 +31,7 @@ function showNewMessage(username, username_color, date, content, content_color) 
 }
 
 function addLoggedUser(username) {
-    users.append(`<div>${username}</div>`);
+    users.append(`<div class="user_on_list">${username}</div>`);
     users.animate({
         scrollTop: 1000
     }, 'slow');
@@ -64,23 +64,25 @@ form.submit(() => {
 
 // LISTEN FOR EVENTS
 
-
 socket.on('logged as', (data) => {
     $('.logged_as').text(data.username);
 });
 
+// when a new user arrives, show him connected users
 socket.on('users already connected', (data) => {
     addLoggedUser(data.username);
 });
 
-// when a new user has logged, tell everyone else, and show him all the users already connected 
+// when a new user has logged, send a message to everyone, and show him all the users already connected 
 socket.on('user has logged', (data) => {
     showNewMessage(data.username, data.username_color, data.date, data.content, data.content_color);
     addLoggedUser(data.username);
 });
 
-socket.on('user has left', (data) => {
+// when a user logs out, send a message to everyone, and remove his name from the list
+socket.on('user has logged out', (data) => {
     showNewMessage(data.username, data.username_color, data.date, data.content, data.content_color);
+    $('.user_on_list').remove(":contains('" + data.username + "')");
 });
 
 // when the message is ok show it on the output
