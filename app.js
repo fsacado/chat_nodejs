@@ -75,17 +75,20 @@ io.on('connection', (socket) => {
             let checkDestinationUserIndex = users.map((e) => { // checking that the destination user exists
                 return e.username;
             }).indexOf(destinationUsername);
+            message_words.splice(0, 1); // remove the first element (@username) so it looks better without it
+            let destinationUserMessage = message_words.join(' '); // make a string from the array
 
             if (message.substring(0, 1) === '@' && checkDestinationUserIndex !== -1) { // if the first character is an '@' AND if the following word is a logged username
-                
-                message_words.splice(0, 1); // remove the first element (so it looks better without it)
-                destinationUserMessage = message_words.join(' '); // make a string from the array
 
                 let messageToOneUser = new Message(username, destinationUserMessage, 'blue');
                 let destinationUserId = users[checkDestinationUserIndex].id; // get the destination user id...
 
                 io.to(destinationUserId).emit('message ok', messageToOneUser); // ...send him the message...
                 socket.emit('message ok', messageToCurrentUser); // ...and send it to the current user
+
+            } else if (message === "/ping") { // if the user sends "/ping"
+                let messagePong = new Message('Ping', 'pong', 'yellow');
+                socket.emit('message ok', messagePong); 
 
             } else { // otherwise...
                 socket.broadcast.emit('message ok', messageToOtherUsers); // ... send it back to everyone...
