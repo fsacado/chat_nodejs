@@ -5,6 +5,8 @@ const io = require('socket.io')(server);
 const random_name = require('node-random-name');
 let Message = require('./Message');
 const validator = require('validator');
+const date = require('date-and-time');
+const os = require('os');
 
 
 // TEMPLATE ENGINE
@@ -93,6 +95,17 @@ io.on('connection', (socket) => {
             } else if (messageToBot === "/ping") { // if the user sends "/ping"
                 let messagePong = new Message('bot', 'pong', 'yellow');
                 socket.emit('message ok', messagePong); 
+
+            } else if (messageToBot === "/date") { // if the user sends "/date"
+                let now = new Date();
+                let completeDate = date.format(now, 'YYYY/MM/DD');
+                let messageDate = new Message('bot', completeDate, 'yellow');
+                socket.emit('message ok', messageDate);
+
+            } else if (messageToBot === "/whoami") { // if the user sends "/whoami"
+                let ip = os.networkInterfaces().wlp3s0[0].address;
+                let messageWhoami = new Message('bot', ip, 'yellow');
+                socket.emit('message ok', messageWhoami);
 
             } else { // otherwise...
                 socket.broadcast.emit('message ok', messageToOtherUsers); // ... send it back to everyone...
