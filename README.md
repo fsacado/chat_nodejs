@@ -8,4 +8,6 @@ The goal :
 - When other users quit the page the current user must know, and the looged out user is removed from the connected users list
 - When a user is typing the other users must know
 - If a user sends "@username message" then the message will be sent only to that user
-- If a user send "/ping", the server must answer "pong", only to this user
+- If a user sends "/ping", the server must answer "pong", only to this user
+- If a user sens "/date", the server must give the current date, only to this user
+- If a user sends "/whoami", the server must give the user's ip adress, only to him
