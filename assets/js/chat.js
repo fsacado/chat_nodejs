@@ -5,7 +5,7 @@ let socket = io.connect('http://localhost:3000');
 // Query DOM
 
 
-let message = $('#message_input');
+let input = $('#message_input');
 users = $('#users_list');
 form = $('#main_form');
 output = $('#output_field');
@@ -45,8 +45,8 @@ function addLoggedUser(username) {
 socket.emit('new user');
 
 // when writing on the message input
-message.on('keyup', () => {
-    if (message.val().length === 0) {
+input.on('keyup', () => {
+    if (input.val().length === 0) {
         socket.emit('user typing', false); // when the message input is empty, set "user typing" to false
     } else {
         socket.emit('user typing', true); // when the user is writing, set "user typing" to true
@@ -55,8 +55,8 @@ message.on('keyup', () => {
 
 // when form is submited
 form.submit(() => {
-    socket.emit('chat message', message.val()); // emit "chat message" event 
-    message.val(''); // empty the input
+    socket.emit('chat message', input.val()); // emit "chat message" event 
+    input.val(''); // empty the input
     socket.emit('user typing', false);
     return false;
 });
@@ -98,4 +98,14 @@ socket.on('user typing', (data) => {
 // when received "user not typing" event from the server, empty the div
 socket.on('user not typing', () => {
     info.text('');
+});
+
+// when socket connects, remove the "disabled" attribute set on the message input
+socket.on('connect', () => {
+    input.removeAttr("disabled");
+});
+
+// when socket disconnects, add a "disabled" attribute to the message input
+socket.on('disconnect', () => {
+    input.attr("disabled", "disabled");
 });

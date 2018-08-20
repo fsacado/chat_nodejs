@@ -4,6 +4,7 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const random_name = require('node-random-name');
 let Message = require('./Message');
+const validator = require('validator');
 
 
 // TEMPLATE ENGINE
@@ -65,6 +66,9 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (message) => {
 
+        let messageToBot = message; // keep authentic message for bot use
+        message = validator.escape(message); // for oher users, replace <, >, &, ', " and / with HTML entities
+        
         if (message !== '' && message !== undefined) { // if the received message is complete...
 
             let messageToOtherUsers = new Message(username, message);
@@ -86,8 +90,8 @@ io.on('connection', (socket) => {
                 io.to(destinationUserId).emit('message ok', messageToOneUser); // ...send him the message...
                 socket.emit('message ok', messageToCurrentUser); // ...and send it to the current user
 
-            } else if (message === "/ping") { // if the user sends "/ping"
-                let messagePong = new Message('Ping', 'pong', 'yellow');
+            } else if (messageToBot === "/ping") { // if the user sends "/ping"
+                let messagePong = new Message('bot', 'pong', 'yellow');
                 socket.emit('message ok', messagePong); 
 
             } else { // otherwise...
@@ -111,7 +115,7 @@ io.on('connection', (socket) => {
 
     // if a user disconnects
     socket.on('disconnect', () => {
-        console.log('A user has logged out');
+        
         let messageLoggedOut = new Message(username, 'has left the channel', 'black', 'grey');
 
         let usernameIndex = users.map((e) => {
@@ -121,6 +125,7 @@ io.on('connection', (socket) => {
 
         socket.broadcast.emit('user has logged out', messageLoggedOut);
     });
+
 });
 
 
