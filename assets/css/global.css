@@ -14,8 +14,8 @@ body {
     display: block;
 }
 
-.card {
-    border-radius: 0;
+.inline_block {
+    display: inline-block;
 }
 
 /* PAGE */
@@ -36,6 +36,20 @@ h2 {
     color: white;
 }
 
+#main_div_rooms {
+    border: solid 2px white;
+    height: 73%;
+    margin-top: 10vh;
+}
+
+.rooms_container {
+    height: 40vh;
+}
+
+.h1_rooms {
+    margin-top: 15vh;
+}
+
 #main_div {
     height: 73%;
 }
@@ -45,6 +59,10 @@ h2 {
     width: 20vw;
     box-shadow: 2px 2px 7px grey;
     font-size: 20px;
+}
+
+.card {
+    border-radius: 0;
 }
 
 .card-header {
@@ -75,7 +93,7 @@ h2 {
 
 #info_field {
     font-style: italic;
-    color: grey;
+    color: white;
     font-size: 14px;
 }
 
@@ -89,6 +107,7 @@ h2 {
     border-color: transparent;
 }
 
+
 @media(max-width: 766px) {
     #connected_users {
         height: 50%;
@@ -96,5 +115,8 @@ h2 {
     }
     .submit_button {
         margin-top: 15px;
+    }
+    .h1_rooms {
+        margin-top:5vh;
     }
 }
