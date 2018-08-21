@@ -1,7 +1,6 @@
 // CONNECTION
 let socket = io.connect('http://localhost:3000');
 
-
 // Query DOM
 
 
@@ -41,9 +40,6 @@ function addLoggedUser(username) {
 // EMIT EVENTS
 
 
-// emits when page first loads
-socket.emit('new user');
-
 // when writing on the message input
 input.on('keyup', () => {
     if (input.val().length === 0) {
@@ -63,6 +59,15 @@ form.submit(() => {
 
 
 // LISTEN FOR EVENTS
+
+
+// when socket connects, remove the "disabled" attribute set on the message input
+socket.on('connect', () => {
+    let params = jQuery.deparam(window.location.search); // get the object {room: room_number}
+
+    input.removeAttr("disabled");
+    socket.emit('join', params);
+});
 
 socket.on('logged as', (data) => {
     $('.logged_as').text(data.username);
@@ -87,6 +92,7 @@ socket.on('user has logged out', (data) => {
 
 // when the message is ok show it on the output
 socket.on('message ok', (data) => {
+    console.log('ok');
     showNewMessage(data.username, data.username_color, data.date, data.content, data.content_color);
 });
 
@@ -98,11 +104,6 @@ socket.on('user typing', (data) => {
 // when received "user not typing" event from the server, empty the div
 socket.on('user not typing', () => {
     info.text('');
-});
-
-// when socket connects, remove the "disabled" attribute set on the message input
-socket.on('connect', () => {
-    input.removeAttr("disabled");
 });
 
 // when socket disconnects, add a "disabled" attribute to the message input
