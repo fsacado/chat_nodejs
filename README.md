@@ -11,3 +11,4 @@ The goal :
 - If a user sends "/ping", the server must answer "pong", only to this user
 - If a user sens "/date", the server must give the current date, only to this user
 - If a user sends "/whoami", the server must give the user's ip adress, only to him
+- Transforming the chat into a multi-room chat
